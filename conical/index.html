@@ -3,7 +3,7 @@
 
 <head>
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
-    <link href="/css/main.css" rel="stylesheet" />
+    <link href="/bio/conical/css/main.css" rel="stylesheet" />
     <title>Bio Page</title>
 </head>
 
@@ -24,7 +24,7 @@
             <span class="track-title">NYAN CAT THEME</span>
             <div class="controls">
                 <audio id="audioPlayer">
-                    <source src="/conical/music/music.mp3" type="audio/mpeg">
+                    <source src="/bio/conical/music/music.mp3" type="audio/mpeg">
                     Ваш браузер не поддерживает элемент audio.
                 </audio>
 
@@ -99,8 +99,8 @@
         // Перемотка по клику на прогресс-баре
         progressBarContainer.addEventListener('click', (e) => {
             const rect = progressBarContainer.getBoundingClientRect();
-            const clickX = e.clientX - rect.left; // X-координата клика относительно элемента
-            const width = rect.width; // Ширина элемента
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
             const duration = audioPlayer.duration;
 
             if (!isNaN(duration)) {
@@ -117,7 +117,6 @@
             timeDisplay.textContent = '0:00'; // Сброс времени
         });
 
-        // Инициализация времени при загрузке метаданных
         audioPlayer.addEventListener('loadedmetadata', () => {
             const duration = audioPlayer.duration;
             if (!isNaN(duration)) {
@@ -125,7 +124,7 @@
                 const seconds = Math.floor(duration % 60);
                 timeDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
-            updatePlayPauseIcon(); // Установить начальную иконку (Play)
+            updatePlayPauseIcon(); // начальная иконка (Play)
         });
     </script>
 </body>
