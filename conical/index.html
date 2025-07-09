@@ -50,53 +50,51 @@
         const progressThumb = document.getElementById('progressThumb');
         const timeDisplay = document.getElementById('timeDisplay');
 
-        // Функция для обновления иконки Play/Pause
         function updatePlayPauseIcon() {
             if (audioPlayer.paused) {
-                // Если пауза, показываем иконку Play (две вертикальные линии)
                 playPauseButton.innerHTML = `
                     <div class="play-pause-bar bar-left"></div>
                     <div class="play-pause-bar bar-right"></div>
                 `;
             } else {
-                // Если играет, показываем иконку Pause (одна вертикальная линия)
                 playPauseButton.innerHTML = `
                     <div class="play-pause-bar bar-left"></div>
                 `;
             }
         }
 
-        // Обработчик клика по кнопке Play/Pause
         playPauseButton.addEventListener('click', () => {
             if (audioPlayer.paused) {
-                audioPlayer.play();
+                audioPlayer.play()
+                    .then(() => {
+                        updatePlayPauseIcon();
+                    })
+                    .catch(error => {
+                        console.error("Error playing audio:", error);
+                        updatePlayPauseIcon();
+                    });
             } else {
                 audioPlayer.pause();
+                updatePlayPauseIcon();
             }
-            updatePlayPauseIcon(); // Обновляем иконку после действия
         });
 
-        // Обновление прогресс-бара и времени по мере воспроизведения
         audioPlayer.addEventListener('timeupdate', () => {
             const currentTime = audioPlayer.currentTime;
             const duration = audioPlayer.duration;
 
-            // Обновление времени
-            if (!isNaN(duration)) { // Проверяем, что длительность доступна
+            if (!isNaN(duration)) {
                 const minutes = Math.floor(currentTime / 60);
                 const seconds = Math.floor(currentTime % 60);
                 timeDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-                // Обновление ширины прогресс-бара
                 const progressPercent = (currentTime / duration) * 100;
                 progressBar.style.width = `${progressPercent}%`;
 
-                // Обновление положения ползунка
                 progressThumb.style.left = `${progressPercent}%`;
             }
         });
 
-        // Перемотка по клику на прогресс-баре
         progressBarContainer.addEventListener('click', (e) => {
             const rect = progressBarContainer.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -108,13 +106,12 @@
             }
         });
 
-        // Когда музыка закончилась
         audioPlayer.addEventListener('ended', () => {
-            audioPlayer.currentTime = 0; // Сброс на начало
-            updatePlayPauseIcon(); // Сброс иконки на "плей"
-            progressBar.style.width = '0%'; // Сброс прогресса
-            progressThumb.style.left = '0%'; // Сброс ползунка
-            timeDisplay.textContent = '0:00'; // Сброс времени
+            audioPlayer.currentTime = 0;
+            updatePlayPauseIcon();
+            progressBar.style.width = '0%';
+            progressThumb.style.left = '0%';
+            timeDisplay.textContent = '0:00';
         });
 
         audioPlayer.addEventListener('loadedmetadata', () => {
@@ -124,7 +121,16 @@
                 const seconds = Math.floor(duration % 60);
                 timeDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
-            updatePlayPauseIcon(); // начальная иконка (Play)
+            updatePlayPauseIcon();
+        });
+
+        audioPlayer.addEventListener('error', (e) => {
+            console.error("Audio loading error:", e);
+            timeDisplay.textContent = "Loading Error!";
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePlayPauseIcon();
         });
     </script>
 </body>
